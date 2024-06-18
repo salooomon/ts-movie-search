@@ -1,16 +1,16 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
-import FormFilter from "./components/from/FormFilter";
+import { Routes, Route} from 'react-router-dom';
 import IndexPage from "./components/page/IndexPage";
+import MovieCard from "./components/movies/MovieCard"
+
 
 function App() {
 
   return (
-    <>
-        <IndexPage />
-    </>
+        <Routes>
+            <Route path='/' element={<IndexPage />}/>
+            <Route path='/movies/:id' element={<MovieCard />}/>
+        </Routes>
   )
 }
 

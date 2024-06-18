@@ -1,8 +1,17 @@
 import {createAsyncThunk, createEntityAdapter, createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {IGenreFilms, IDocs, IGenreMovies, IState, IMoviesResponse} from "../interface/interface";
+import {
+    IDocs,
+    IGenreMovies,
+    IState,
+    IMoviesResponse,
+    IFilmGenre,
+    IGenreFilms,
+    IMoviesList
+} from "../interface/interface";
 import axios, {RawAxiosRequestHeaders} from "axios";
 
-const selectFields = '&limit=50&selectFields=id&selectFields=year&selectFields=poster&selectFields=name&selectFields=description&selectFields=releaseYears&selectFields=genres'
+// Параметры для получение определенных полей
+const selectFields = '&selectFields=alternativeName&selectFields=id&selectFields=year&selectFields=poster&selectFields=name&selectFields=description&selectFields=releaseYears&selectFields=genres'
 
  const instance = axios.create({
     baseURL: 'https://api.kinopoisk.dev',
@@ -10,9 +19,8 @@ const selectFields = '&limit=50&selectFields=id&selectFields=year&selectFields=p
         'X-API-KEY' : 'T5EG0HS-14X4AR4-JHBK0ZD-AW3E0BE'
     } as RawAxiosRequestHeaders
 });
-// 'T5EG0HS-14X4AR4-JHBK0ZD-AW3E0BE'
-const dataAdapter = createEntityAdapter();
 
+const dataAdapter = createEntityAdapter();
 const initialState : IState = dataAdapter.getInitialState({
     loadingStatusGenre: 'loading',
     loadingStatusMovie: 'loading',
@@ -20,6 +28,7 @@ const initialState : IState = dataAdapter.getInitialState({
     genreFilms: [],
     optionsUrlMovie: '',
     films: [],
+    cardFilm: [],
     pages: 0,
     page: 1
 });
@@ -31,7 +40,7 @@ export const fetchGenreMovies = createAsyncThunk(
         const response = await instance.get('v1/movie/possible-values-by-field?field=genres.name');
         return response.data
     }
-)
+);
 
 // Запрос на получения списка фильмов c переданными параметрами
 // export const fetchMoviesWithOptions = createAsyncThunk(
@@ -41,13 +50,26 @@ export const fetchGenreMovies = createAsyncThunk(
 //     }
 // )
 
+// Запрос на получения фильмов без параметро, используется для первичной загрузки страницы
 export const fetchMovies = createAsyncThunk(
     'fetch/Movies',
     async (numPage) => {
-        const response = await instance.get(`v1.4/movie?page=${numPage}${selectFields}`)
+        const response = await instance.get(`v1.4/movie?page=${numPage}&limit=50${selectFields}`)
+        return response.data
+    }
+);
+
+// Запрос на получение фильма пой ID
+export const fetchMoviesByID = createAsyncThunk(
+    'fetch/MoviesByID',
+    async (id: number) => {
+        const response = await instance.get(`v1.4/movie?${selectFields}&selectFields=rating&id=${id}`)
+        console.log(response.data)
         return response.data
     }
 )
+
+
 const storageReducer = createSlice({
     name: 'storage',
     initialState,
@@ -79,15 +101,29 @@ const storageReducer = createSlice({
             state.error = null
         })
         .addCase(fetchMovies.fulfilled, (state : IState, action : PayloadAction<IMoviesResponse>) => {
-            console.log(action)
-            state.loadingStatusMovie = "loaded",
+            state.loadingStatusMovie = "loaded"
             state.films = action.payload.docs
             state.page = action.payload.pages
             state.error = null
         })
-        .addCase(fetchMovies.rejected, (state : IState, action : PayloadAction<string>) => {
+        .addCase(fetchMoviesByID.rejected, (state : IState, action : PayloadAction<string>) => {
             state.loadingStatusMovie = 'failed',
             state.error = action.payload
+        })
+
+        // Обработка запроса на получения фильма по ID
+        .addCase(fetchMoviesByID.pending, (state : IState) => {
+            state.loadingStatusMovie = "loading",
+                state.error = null
+        })
+        .addCase(fetchMoviesByID.fulfilled, (state : IState, action : PayloadAction<IMoviesResponse>) => {
+            state.loadingStatusMovie = "loaded"
+            state.cardFilm = action.payload.docs
+            state.error = null
+        })
+        .addCase(fetchMovies.rejected, (state : IState, action : PayloadAction<string>) => {
+            state.loadingStatusMovie = 'failed',
+                state.error = action.payload
         })
     }
 })

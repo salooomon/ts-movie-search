@@ -13,7 +13,7 @@ const IndexPage = () => {
     const {loadingStatusMovie, films, page} = useSelector((state : {state: IState}) => state.state);
 
     useEffect(() => {
-        dispatch(fetchMovies(page))
+        dispatch(fetchMovies(page));
     }, [])
 
     const handlerClickReboot = () => {

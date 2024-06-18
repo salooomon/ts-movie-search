@@ -42,7 +42,7 @@
 }
 
 .item-movie {
-  display: flex;
+  /*display: flex;*/
   /*flex-flow: column wrap;*/
   list-style-type: none;
 }

@@ -1,0 +1,6 @@
+
+const moviesPage = () => {
+    return <>
+
+    </>
+}

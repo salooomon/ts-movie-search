@@ -1,10 +1,7 @@
 import {Link} from "react-router-dom";
 import {IDocs, IMoviesList} from "../../interface/interface";
-
-const changeSizeImg = (str) => {
-    const newStr = str.replace(/.{5}$/, "")
-    return `${newStr}136x204`
-}
+import {stubPosterList} from "../../assets/posters";
+import {changeSizeImg} from "../../assets/posters";
 
 const MoviesList = ({data} : IDocs) => {
     return (
@@ -14,7 +11,11 @@ const MoviesList = ({data} : IDocs) => {
                     return movie.name
                             ? <li className="item-movie" key={id}>
                                 <Link to={`/movies/${movie.id}`}>
-                                    {movie.poster && <img src={changeSizeImg(movie.poster.previewUrl)} alt="постер к фильму" />}
+                                    {<img src={
+                                        movie.poster
+                                        ? `${changeSizeImg(movie.poster.previewUrl || movie.poster.url)}136x204`
+                                        : stubPosterList
+                                    } alt="постер к фильму" />}
                                     <div className="info-movie">
                                         <h4 className="title">{movie.name}, {movie.year}</h4>
                                     </div>
