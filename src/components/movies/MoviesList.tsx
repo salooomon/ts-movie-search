@@ -1,23 +1,24 @@
 import {Link} from "react-router-dom";
-import {IDocs, IMoviesList} from "../../interface/interface";
+import { IMoviesList} from "../../interface/interface";
 import {stubPosterList} from "../../assets/posters";
 import {changeSizeImg} from "../../assets/posters";
+import * as React from "react";
 
-const MoviesList = ({data} : IDocs) => {
+const MoviesList: React.FC = ({data} : IMoviesList[]) => {
     return (
         <div className="block-movies">
             <ul className="list-movies">
                 {data.map((movie : IMoviesList, id) => {
-                    return movie.name
+                    return movie.name || movie.alternativeName
                             ? <li className="item-movie" key={id}>
                                 <Link to={`/movies/${movie.id}`}>
                                     {<img src={
                                         movie.poster
-                                        ? `${changeSizeImg(movie.poster.previewUrl || movie.poster.url)}136x204`
-                                        : stubPosterList
+                                            ? `${changeSizeImg(movie.poster.previewUrl || movie.poster.url)}136x204`
+                                            : stubPosterList
                                     } alt="постер к фильму" />}
                                     <div className="info-movie">
-                                        <h4 className="title">{movie.name}, {movie.year}</h4>
+                                        <h4 className="title">{movie.name ? movie.name : movie.alternativeName}, {movie.year}</h4>
                                     </div>
                                 </Link>
                             </li>

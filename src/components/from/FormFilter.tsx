@@ -1,53 +1,42 @@
-import  {useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import {IFilterOptions, IState} from "../../interface/interface";
 import {useDispatch, useSelector} from "react-redux";
 import {addOptionsUrlMovie, fetchGenreMovies} from "../../redux/storage";
 import {AppDispatch} from "../../store/store";
-import Preloader from "../Preloader"
-
-const generateArrayOfYears = () => {
-    const nowYear = new Date().getFullYear();
-    const oldYear = nowYear - 34
-
-    const years = [];
-
-    for(let i = oldYear; i <= nowYear; i++ ) {
-        years.push(i.toString());
-    }
-
-    return years.reverse()
-}
-
-const generateArrayOfRating = () => {
-    const ratings = []
-    for(let i = 1; i <= 10; i++) {
-        ratings.push(i.toString());
-    }
-    return ratings.reverse()
-}
+import { useNavigate } from "react-router-dom";
+import Preloader from "../Preloader";
+import {generateArrayOfRating, generateArrayOfYears} from "../../utils/utils";
+import Reloader from "../error/Reloader";
+import * as React from "react";
 
 const generationUrlRequestMovies = (options : IFilterOptions) => {
     let url = ''
     if(options.genre) {
         url += `&genres.name=${options.genre}`
-        console.log(url, 1)
     }
     if (options.ratingFrom && options.ratingTo) {
-        console.log(url, 2)
         url += `&rating.kp=${options.ratingFrom}-${options.ratingTo}`
     }
     if (options.yearFrom && options.yearTo) {
-        console.log(url, 3)
         url += `&year=${options.yearFrom}-${options.yearTo}`
     }
 
     return url
 }
 
-const FormFilter = () => {
+//Компонент фромы фильтров (жанр, рейтинг, год)
+const FormFilter : React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
+    const navigate = useNavigate();
+
     const {genreFilms, loadingStatusGenre} = useSelector((state : {state: IState}) => state.state);
-    const [optionsFilter, setOptions] = useState<IFilterOptions>({genre: '', ratingFrom: '1', ratingTo: '10', yearFrom: '1990', yearTo: '2024'});
+    const [optionsFilter, setOptions] = useState<IFilterOptions>({
+        genre: '',
+        ratingFrom: '1',
+        ratingTo: '10',
+        yearFrom: '1990',
+        yearTo: '2024'
+    });
 
     const ratings = generateArrayOfRating();
     const years =  generateArrayOfYears();
@@ -56,7 +45,7 @@ const FormFilter = () => {
         dispatch(fetchGenreMovies());
     }, []);
 
-    function handleChange(event: React.FormEvent) {
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const target = event.target as HTMLInputElement;
         const valueToString = target.value.toString();
 
@@ -70,17 +59,16 @@ const FormFilter = () => {
         } else if (target.name === "year_to") {
             newOptions.yearTo = valueToString
         } else if (target.name === "genre") {
-            newOptions.genre = target.value
+            newOptions.genre = target.value === 'все' ? '' : target.value
         }
         setOptions(newOptions);
     }
 
-    function handleSubmit (event: React.FormEvent) {
+    const handleSubmit = (event: React.FormEvent) => {
         event.preventDefault();
         const url : string = generationUrlRequestMovies<string>(optionsFilter);
-        console.log(url)
-        dispatch(addOptionsUrlMovie(url))
-
+        dispatch(addOptionsUrlMovie(url));
+        navigate(`/movies`);
     }
 
     const handlerClickReboot = () => {
@@ -90,10 +78,7 @@ const FormFilter = () => {
     return (
         loadingStatusGenre !== "loaded"
         ? loadingStatusGenre === "failed"
-            ? <div className="failed">
-                <h2>Что-то пошло не так</h2>
-                <button className="reboot" onClick={handlerClickReboot}> Перезагрузить </button>
-            </div>
+            ? <Reloader onClik={handlerClickReboot} />
             : <Preloader />
        : <div>
             <form onSubmit={handleSubmit}>

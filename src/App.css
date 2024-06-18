@@ -42,7 +42,26 @@
 }
 
 .item-movie {
-  /*display: flex;*/
-  /*flex-flow: column wrap;*/
   list-style-type: none;
 }
+
+.pages {
+  margin: 20px 0;
+
+}
+
+.page {
+  border: 1px solid lightgray;
+  padding: 5px 10px;
+  margin: 10px 10px;
+  cursor: pointer;
+}
+
+.current-page {
+  border: 2px solid gray;
+  padding: 5px 10px;
+  margin: 10px 10px;
+  cursor: pointer;
+  font-weight: 700;
+}
+

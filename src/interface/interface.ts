@@ -1,4 +1,6 @@
 // Интерфейс состояние фильтров поиска
+import {fetchMoviesWithOptions} from "../redux/storage";
+
 export interface IFilterOptions {
     genre?: string
     ratingFrom?: string
@@ -7,14 +9,9 @@ export interface IFilterOptions {
     yearTo?: string
 }
 // Интерфейс объекта жанров
-export interface IGenresMovies {
+export interface IGenresMovies{
     name: string,
     slug: string
-}
-
-// Интерфейс списка жанров
-export interface IGenreFilms {
-    []: IGenresMovies
 }
 
 // Интерфейс глобально состояния
@@ -22,18 +19,13 @@ export interface IState {
     loadingStatusGenre: string
     loadingStatusMovie: string
     error: string | null
-    genreFilms: IGenreFilms
+    genreFilms: IGenresMovies[]
     optionsUrlMovie: string
     films: IMoviesList[],
     cardFilm: IMoviesList[],
     pages: number,
-    page: number
+    currentPage: number
 
-}
-
-// Интерфейс жанров фильма
-export interface IFilmGenre {
-    []: IGenres
 }
 
 // Интерфейс объекта жанров
@@ -76,17 +68,20 @@ export interface IMoviesList {
 
 }
 
-// Интерфейс списка фильмов
-export interface IDocs {
-    []: IMoviesList
-}
-
 // Интерфейс запроса с сервера
 export interface IMoviesResponse {
-    docs: IDocs
+    docs: IMoviesList[]
     total: number
     limit: number
     page: number
     pages: number
 }
 
+export interface IFetchMovieListOfParams {
+    url?: string,
+    page: number
+}
+
+// export default interface IfetchMoviesWithOptions {
+//
+// }
