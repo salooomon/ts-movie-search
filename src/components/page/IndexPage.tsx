@@ -1,17 +1,18 @@
+import * as React from "react";
+import {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
+
+import {fetchMovies, updateCurrentPage} from "../../redux/storage";
 import {AppDispatch} from "../../store/store";
 import {IState} from "../../interface/interface";
-import {useEffect} from "react";
-import {fetchMovies, updateCurrentPage} from "../../redux/storage";
 import FormFilter from "../from/FormFilter";
 import MoviesList from "../movies/MoviesList";
 import Preloader from "../Preloader";
 import ButtonPages from "../button/ButtonPages";
 import Reloader from "../error/Reloader";
-import * as React from "react";
 import ButtonNavigate from "../button/ButtonNavigate";
 
-// Компонент главной страници
+// Компонент главной страницы
 const IndexPage : React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
     const {loadingStatusMovie, films, currentPage} = useSelector((state : {state: IState}) => state.state);

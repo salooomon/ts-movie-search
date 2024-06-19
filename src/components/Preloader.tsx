@@ -1,7 +1,7 @@
 // Компонент ожидания загрузки
 const Preloader = () => {
     return (
-        <div>Loading...</div>
+        <div className="preloader"><b>Loading...</b></div>
     )
 }
 

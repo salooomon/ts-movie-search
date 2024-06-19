@@ -10,8 +10,7 @@ import {
     IState,
     IMoviesResponse,
     IFetchMovieListOfParams,
-    IGenreResponse,
-    IMoviesList,
+    IGenreResponse, IMoviesItem,
 } from "../interface/interface";
 
 import axios, {RawAxiosRequestHeaders} from "axios";
@@ -23,7 +22,7 @@ const selectFields = '&selectFields=alternativeName&selectFields=id&selectFields
     baseURL: 'https://api.kinopoisk.dev',
 
     headers: {
-        'X-API-KEY' : 'TTRP2E1-VXHMAS1-PWMJCK7-V86Y6EF'
+        'X-API-KEY' : 'T5EG0HS-14X4AR4-JHBK0ZD-AW3E0BE'
     } as RawAxiosRequestHeaders
 });
 
@@ -95,8 +94,8 @@ const storageReducer = createSlice({
         updateCurrentPage(state: IState, action : PayloadAction<number>) {
             state.currentPage = action.payload
         },
-        // Сохроняет фильм в избранное
-        addFavoritesMovie(state : IState, action : PayloadAction<IMoviesList>) {
+        // Сохраняет фильм в избранное
+        addFavoritesMovie(state : IState, action : PayloadAction<IMoviesItem>) {
             if (state.favoriteMovies.some(elem => elem.id === action.payload.id)) {
                 alert("Такой фильм уже есть в избранном")
             } else {
@@ -118,7 +117,6 @@ const storageReducer = createSlice({
             state.error = null
         })
         .addCase(fetchGenreMovies.fulfilled, (state : IState, action : PayloadAction<IGenreResponse>) => {
-            console.log(action)
             state.loadingStatusGenre = "loaded"
             state.genreFilms = [...action.payload, {name : 'все', slug: 'all'}]
             state.error = null
@@ -150,7 +148,6 @@ const storageReducer = createSlice({
                 state.error = null
         })
         .addCase(fetchMoviesByID.fulfilled, (state : IState, action : PayloadAction<IMoviesResponse>) => {
-            console.log(action.payload)
             state.loadingStatusMovie = "loaded"
             state.cardFilm = action.payload.docs
             state.error = null

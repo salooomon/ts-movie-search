@@ -8,12 +8,11 @@ interface IMovieCardItemProps {
     removeAction?: () => void
     addAction?: () => void
 }
-// Компонент возвращает
+// Компонент возвращает блок фильма
 const MovieCardItem: React.FC<IMovieCardItemProps> = (props) => {
     const {removeAction, addAction, movie} = props;
     const {poster, name, alternativeName, genres, rating, year, releaseYears, description} = movie;
 
-    console.log(props, genres)
     return(
         <div>
             <img src={

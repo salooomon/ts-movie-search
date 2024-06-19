@@ -1,16 +1,19 @@
+import * as React from "react";
+import {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
+
+import {fetchMoviesWithOptions} from "../../redux/storage";
 import {AppDispatch} from "../../store/store";
 import {IState} from "../../interface/interface";
 import Preloader from "../Preloader";
 import MoviesList from "../movies/MoviesList";
-import {useEffect} from "react";
 import ButtonNavigate from "../button/ButtonNavigate";
-import {fetchMoviesWithOptions} from "../../redux/storage";
+
 import ButtonPages from "../button/ButtonPages";
 import Reloader from "../error/Reloader";
-import * as React from "react";
 
-// Компнент отображающий страницу с фильмами с\без расширенного поиска
+
+// Компонент отображающий страницу с фильмами с\без расширенного поиска
 const MoviesPage : React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
     const {
@@ -33,17 +36,20 @@ const MoviesPage : React.FC = () => {
         : dispatch(fetchMoviesWithOptions({url : '', page: currentPage}));
     }
 
-    return <>
-        <ButtonNavigate params={'/'} direction={'На главную'}/>
-        <ButtonNavigate params={'favorites'} direction={'Избранное'}/>
-        {/*Проверка на ответ с сервера, выводит прелоадер до успешного ответа, в случае ошибки выведет компонент перезагрузки страницы*/}
-        {loadingStatusMovie !== "loaded"
-            ? loadingStatusMovie === "failed"
-                ? <Reloader onClick={handlerClickReboot} />
-                : <Preloader/>
-            : <MoviesList data={films}/>}
-        <ButtonPages />
-    </>
+    return (
+        <div className='movie-page'>
+            <ButtonNavigate params={'/'} direction={'На главную'}/>
+            <ButtonNavigate params={'/favorites'} direction={'Избранное'}/>
+            {/*Проверка на ответ с сервера, выводит прелоадер до успешного ответа, в случае ошибки выведет компонент перезагрузки страницы*/}
+            {loadingStatusMovie !== "loaded"
+                ? loadingStatusMovie === "failed"
+                    ? <Reloader onClick={handlerClickReboot} />
+                    : <Preloader/>
+                : <MoviesList data={films}/>}
+            <ButtonPages />
+
+        </div>
+    )
 }
 
 export default MoviesPage;

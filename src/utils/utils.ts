@@ -1,4 +1,3 @@
-
 import {IFilterOptions, IRating} from "../interface/interface";
 
 // Функция формирования числа страниц для кнопок плагинации

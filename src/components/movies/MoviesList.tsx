@@ -1,8 +1,8 @@
+import * as React from "react";
 import {Link} from "react-router-dom";
 import { IMoviesItem} from "../../interface/interface";
 import {stubPosterList} from "../../assets/posters";
 import {changeSizeImg} from "../../assets/posters";
-import * as React from "react";
 
 // Компонент выводит список фильмов
 const MoviesList: React.FC = ({data} : IMoviesItem[]) => {
