@@ -22,7 +22,7 @@ const selectFields = '&selectFields=alternativeName&selectFields=id&selectFields
     baseURL: 'https://api.kinopoisk.dev',
 
     headers: {
-        'X-API-KEY' : 'T5EG0HS-14X4AR4-JHBK0ZD-AW3E0BE'
+        'X-API-KEY' : 'TTRP2E1-VXHMAS1-PWMJCK7-V86Y6EF'
     } as RawAxiosRequestHeaders
 });
 
