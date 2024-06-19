@@ -5,24 +5,9 @@ import {addOptionsUrlMovie, fetchGenreMovies} from "../../redux/storage";
 import {AppDispatch} from "../../store/store";
 import { useNavigate } from "react-router-dom";
 import Preloader from "../Preloader";
-import {generateArrayOfRating, generateArrayOfYears} from "../../utils/utils";
+import {generateArrayOfRating, generateArrayOfYears, generationUrlRequestMovies} from "../../utils/utils";
 import Reloader from "../error/Reloader";
 import * as React from "react";
-
-const generationUrlRequestMovies = (options : IFilterOptions) => {
-    let url = ''
-    if(options.genre) {
-        url += `&genres.name=${options.genre}`
-    }
-    if (options.ratingFrom && options.ratingTo) {
-        url += `&rating.kp=${options.ratingFrom}-${options.ratingTo}`
-    }
-    if (options.yearFrom && options.yearTo) {
-        url += `&year=${options.yearFrom}-${options.yearTo}`
-    }
-
-    return url
-}
 
 //Компонент фромы фильтров (жанр, рейтинг, год)
 const FormFilter : React.FC = () => {
@@ -65,10 +50,14 @@ const FormFilter : React.FC = () => {
     }
 
     const handleSubmit = (event: React.FormEvent) => {
-        event.preventDefault();
-        const url : string = generationUrlRequestMovies<string>(optionsFilter);
-        dispatch(addOptionsUrlMovie(url));
-        navigate(`/movies`);
+        try {
+            event.preventDefault();
+            const url : string = generationUrlRequestMovies<string>(optionsFilter);
+            dispatch(addOptionsUrlMovie(url));
+            navigate(`/movies`);
+        } catch (error) {
+            alert(error)
+        }
     }
 
     const handlerClickReboot = () => {
@@ -76,6 +65,7 @@ const FormFilter : React.FC = () => {
     }
 
     return (
+        //Проверка на ответ с сервера, выводит прелоадер до успешного ответа, в случае ошибки выведет компонент перезагрузки страницы
         loadingStatusGenre !== "loaded"
         ? loadingStatusGenre === "failed"
             ? <Reloader onClik={handlerClickReboot} />
@@ -83,7 +73,7 @@ const FormFilter : React.FC = () => {
        : <div>
             <form onSubmit={handleSubmit}>
                 <label onChange={handleChange}>
-                    Жанр:
+                    <span className='text-label'>Жанр:</span>
                     <select name="genre" required>
                         {genreFilms.map((genre, id) => {
                             return <option key={id} value={genre.name} selected>{genre.name}</option>
@@ -91,15 +81,13 @@ const FormFilter : React.FC = () => {
                     </select>
                 </label>
                 <label onChange={handleChange}>
-                    Рейтинг:
-                    от :
+                    <span className='text-label'>Рейтинг от:</span>
                     <select name="rating_from" required>
                         {ratings.map((rating, id) => {
                             return <option key={id} value={rating} selected>{rating}</option>
                         })}
                     </select>
-
-                    до :
+                    <span className='text-label'>до:</span>
                     <select name="rating_to" required>
                         {ratings.reverse().map((rating, id) => {
                             return <option key={id} value={rating} selected>{rating}</option>
@@ -107,15 +95,13 @@ const FormFilter : React.FC = () => {
                     </select>
                 </label>
                 <label onChange={handleChange}>
-                    Год выхода:
-                    от :
+                    <span className='text-label'>Год выхода от:</span>
                     <select name="year_from" required>
                         {years.map((year, id) => {
                             return <option key={id} value={year} selected>{year}</option>
                         })}
                     </select>
-
-                    до :
+                    <span className='text-label'>до:</span>
                     <select name="year_to" required>
                         {years.reverse().map((year, id) => {
                             return <option key={id} value={year} selected>{year}</option>

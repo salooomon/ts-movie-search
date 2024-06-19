@@ -42,6 +42,8 @@
 }
 
 .item-movie {
+  display: flex;
+  justify-content: center;
   list-style-type: none;
 }
 
@@ -63,5 +65,26 @@
   margin: 10px 10px;
   cursor: pointer;
   font-weight: 700;
+}
+
+.successfully-added {
+  position: absolute;
+  z-index:  100;
+  top:      45px;
+
+  width:    100px;
+  height:   105px;
+
+  border: 2px solid greenyellow;
+  border-radius: 30%;
+  padding: 5px 10px;
+
+  background: lightgray;
+  opacity: 95%;
+}
+
+.text-label {
+  padding: 5px 5px;
+  margin: 5px 5px;
 }
 

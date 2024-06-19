@@ -4,7 +4,7 @@ import * as React from "react";
 interface IReloader {
     handlerClickReboot: MouseEventHandler<HTMLButtonElement>
 }
-
+// Компонент возвращает блок перезагрузки страницы
 const Reloader : React.FC<IReloader> = ({handlerClickReboot}) => {
     return(
         <div className="failed">

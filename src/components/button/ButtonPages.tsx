@@ -11,14 +11,14 @@ const ButtonPages = () => {
     const navigate = useNavigate();
     const {currentPage, pages}  = useSelector((state : {state: IState}) => state.state);
 
-    const arrayPages = []
+    const arrayPages = [];
 
     // Функция принимает массив страниц, общее число страниц, нынешнюю страницу
     // После перехода на 10 страницу добавляет новые страницы
     createPages(arrayPages, pages, currentPage);
 
     const handlerClick = (page) => {
-        navigate(`/movies/`)
+        navigate(`/movies/`);
         dispatch(updateCurrentPage(page));
     }
 

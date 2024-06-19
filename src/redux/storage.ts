@@ -5,12 +5,15 @@ import {
     createSlice,
     PayloadAction
 } from "@reduxjs/toolkit";
+
 import {
     IState,
     IMoviesResponse,
     IFetchMovieListOfParams,
-    IGenresMovies
+    IGenreResponse,
+    IMoviesList,
 } from "../interface/interface";
+
 import axios, {RawAxiosRequestHeaders} from "axios";
 
 // Параметры для получение определенных полей
@@ -19,11 +22,12 @@ const selectFields = '&selectFields=alternativeName&selectFields=id&selectFields
  const instance = axios.create({
     baseURL: 'https://api.kinopoisk.dev',
     headers: {
-        'X-API-KEY' : 'E3DKPYY-0PS4W5Y-JD2DF7F-FNMEFV0'
+        'X-API-KEY' : 'TTRP2E1-VXHMAS1-PWMJCK7-V86Y6EF'
     } as RawAxiosRequestHeaders
 });
 
 const dataAdapter = createEntityAdapter();
+//Начальный образ состояния
 const initialState : IState = dataAdapter.getInitialState({
     loadingStatusGenre: 'loading',
     loadingStatusMovie: 'loading',
@@ -32,6 +36,7 @@ const initialState : IState = dataAdapter.getInitialState({
     optionsUrlMovie: '',
     films: [],
     cardFilm: [],
+    favoriteMovies: [],
     pages: 0,
     currentPage: 1
 });
@@ -49,7 +54,7 @@ export const fetchGenreMovies = createAsyncThunk(
 export const fetchMovies = createAsyncThunk(
     'fetch/Movies',
     async (numPage : number) => {
-        const response = await instance.get(`v1.4/movie?page=${numPage}&limit=50${selectFields}`)
+        const response = await instance.get(`v1.4/movie?page=${numPage}&limit=50${selectFields}`);
         return response.data
     }
 );
@@ -58,7 +63,7 @@ export const fetchMovies = createAsyncThunk(
 export const fetchMoviesByID = createAsyncThunk(
     'fetch/MoviesByID',
     async (id: number) => {
-        const response = await instance.get(`v1.4/movie?${selectFields}&selectFields=rating&id=${id}`)
+        const response = await instance.get(`v1.4/movie?${selectFields}&selectFields=rating&id=${id}`);
         return response.data
     }
 );
@@ -68,11 +73,10 @@ export const fetchMoviesWithOptions = createAsyncThunk(
     'fetch/MoviesWithOptions',
     async ({url, page} : IFetchMovieListOfParams) => {
         if (!url) {
-            console.log(page)
-            const response = await instance.get(`v1.4/movie?page=${page}&limit=50${selectFields}`)
+            const response = await instance.get(`v1.4/movie?page=${page}&limit=50${selectFields}`);
             return response.data
         } else {
-            const response = await instance.get(`v1.4/movie?page=${page}&limit=50${selectFields}${url}`)
+            const response = await instance.get(`v1.4/movie?page=${page}&limit=50${selectFields}${url}`);
             return response.data
         }
     }
@@ -82,11 +86,21 @@ const storageReducer = createSlice({
     name: 'storage',
     initialState,
     reducers: {
+        // Сохраняет url для запроса
         addOptionsUrlMovie(state : IState, action : PayloadAction<string>) {
             state.optionsUrlMovie = action.payload
         },
-        updateCurrentPage(state: IState, action: PayloadAction<number>) {
+        // Сохраняет число текущей страницы
+        updateCurrentPage(state: IState, action : PayloadAction<number>) {
             state.currentPage = action.payload
+        },
+        // Сохроняет фильм в избранное
+        addFavoritesMovie(state : IState, action : PayloadAction<IMoviesList>) {
+            state.favoriteMovies.push(action.payload)
+        },
+        // Удаляет фильм из избранного
+        removeFavoriteMovie(state: IState, action : PayloadAction<number>) {
+            state.favoriteMovies = state.favoriteMovies.filter((elem) => elem.id !== action.payload)
         }
     },
     extraReducers: (builder : ActionReducerMapBuilder<IState>) => {
@@ -96,7 +110,8 @@ const storageReducer = createSlice({
             state.loadingStatusGenre = "loading",
             state.error = null
         })
-        .addCase(fetchGenreMovies.fulfilled, (state : IState, action : PayloadAction<IGenresMovies>) => {
+        .addCase(fetchGenreMovies.fulfilled, (state : IState, action : PayloadAction<IGenreResponse>) => {
+            console.log(action)
             state.loadingStatusGenre = "loaded"
             state.genreFilms = [...action.payload, {name : 'все', slug: 'all'}]
             state.error = null
@@ -112,6 +127,7 @@ const storageReducer = createSlice({
             state.error = null
         })
         .addCase(fetchMovies.fulfilled, (state : IState, action : PayloadAction<IMoviesResponse>) => {
+            console.log(action.payload)
             state.loadingStatusMovie = "loaded"
             state.films = action.payload.docs
             state.pages = action.payload.pages
@@ -128,6 +144,7 @@ const storageReducer = createSlice({
                 state.error = null
         })
         .addCase(fetchMoviesByID.fulfilled, (state : IState, action : PayloadAction<IMoviesResponse>) => {
+            console.log(action.payload)
             state.loadingStatusMovie = "loaded"
             state.cardFilm = action.payload.docs
             state.error = null
@@ -155,5 +172,5 @@ const storageReducer = createSlice({
     }
 })
 
-export const {addOptionsUrlMovie, updateCurrentPage} = storageReducer.actions
+export const {addOptionsUrlMovie, updateCurrentPage, addFavoritesMovie, removeFavoriteMovie} = storageReducer.actions
 export default storageReducer.reducer

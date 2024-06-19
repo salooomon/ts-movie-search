@@ -4,14 +4,13 @@ interface IButtonNavigate {
     params: string
     direction: string
 }
-
+// Компонент принимает парамтер навигации и описание для кнопки
 const ButtonNavigate : React.FC<IButtonNavigate> = ({params, direction}) => {
     const navigate = useNavigate();
-    console.log(params, direction)
 
     return(
         <button className="btn" onClick={() => navigate(params)}>{direction}</button>
     )
 }
 
-export default ButtonNavigate
+export default ButtonNavigate;

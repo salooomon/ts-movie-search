@@ -9,6 +9,7 @@ import Preloader from "../Preloader";
 import ButtonPages from "../button/ButtonPages";
 import Reloader from "../error/Reloader";
 import * as React from "react";
+import ButtonNavigate from "../button/ButtonNavigate";
 
 // Компонент главной страници
 const IndexPage : React.FC = () => {
@@ -24,15 +25,17 @@ const IndexPage : React.FC = () => {
         dispatch(fetchMovies(currentPage));
     }
 
+
     return <>
+        <ButtonNavigate params={'/favorites'} direction={'Избранное'}/>
         <FormFilter />
-        {
-            loadingStatusMovie !== "loaded"
+
+        {/*//Проверка на ответ с сервера, выводит прелоадер до успешного ответа, в случае ошибки выведет компонент перезагрузки страницы*/}
+        {loadingStatusMovie !== "loaded"
             ? loadingStatusMovie === "failed"
                 ? <Reloader onClick={handlerClickReboot} />
                 : <Preloader />
-            : <MoviesList  data={films}/>
-        }
+            : <MoviesList  data={films}/>}
         <ButtonPages />
     </>
 

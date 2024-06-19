@@ -35,6 +35,8 @@ const MoviesPage : React.FC = () => {
 
     return <>
         <ButtonNavigate params={'/'} direction={'На главную'}/>
+        <ButtonNavigate params={'favorites'} direction={'Избранное'}/>
+        {/*Проверка на ответ с сервера, выводит прелоадер до успешного ответа, в случае ошибки выведет компонент перезагрузки страницы*/}
         {loadingStatusMovie !== "loaded"
             ? loadingStatusMovie === "failed"
                 ? <Reloader onClick={handlerClickReboot} />

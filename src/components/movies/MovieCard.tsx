@@ -6,51 +6,20 @@ import {AppDispatch} from "../../store/store";
 import Preloader from "../Preloader";
 import ButtonNavigate from "../button/ButtonNavigate";
 
-import {useEffect} from "react";
-import {fetchMoviesByID} from "../../redux/storage";
+import {useEffect, useState} from "react";
+import {addFavoritesMovie, fetchMoviesByID} from "../../redux/storage";
 import {changeSizeImg} from "../../assets/posters";
 import Reloader from "../error/Reloader";
 import * as React from "react";
-
-const ratingOfString = (rating : IRating) => {
-    let str = ''
-    let ratingIsZero = 0
-    for (let key in rating) {
-        if (rating[key] !== 0) {
-            if (key === "kp") {
-                str += `Кинопоиск: ${rating[key]}, `
-            }
-            if (key === "imdb") {
-                str += `IMDb: ${rating[key]}, `
-            }
-            if (key === "filmCritics") {
-                str += `Кинокрикитики: ${rating[key]}, `
-            }
-            if (key === "russianFilmCritics") {
-                str += `Кинокритики России: ${rating[key]}, `
-            }
-
-        }
-        ratingIsZero++
-        if (ratingIsZero >= 4) {
-            str += '-'
-        }
-    }
-    return str.replace(/.{1}$/, '')
-}
-
-const genreOfString = (genres) => {
-    let str = '';
-    genres.map((genre) => {
-        str += `${genre.name}, `
-    })
-    return str.replace(/.{2}$/, '')
-}
+import {genreOfString, ratingOfString} from "../../utils/utils";
+import SuccessfullyAddedMovie from "../../utils/successfullyAddedMovie";
 
 // Компонент страницы фильма
 const MovieCard : React.FC = () => {
     const params = useParams();
     const dispatch = useDispatch<AppDispatch>();
+
+    const [isShadow, setIsShadow] = useState(true);
     const {
         loadingStatusMovie,
         cardFilm,
@@ -61,8 +30,16 @@ const MovieCard : React.FC = () => {
         dispatch(fetchMoviesByID(params.id));
     }, [params])
 
-    const handlerClick = () => {
+    useEffect(() => {
+        setTimeout(() => {
+            setIsShadow(true)
+        }, 3000)
+    }, [isShadow])
 
+    const handlerClick = (movie) => {
+        dispatch(addFavoritesMovie(movie));
+        setIsShadow(false)
+        // alert('Фильм успешно добавлен в список!')
     }
 
     const handlerClickReboot = () => {
@@ -70,12 +47,14 @@ const MovieCard : React.FC = () => {
     }
 
     return (
+        //Проверка на ответ с сервера, выводит прелоадер до успешного ответа, в случае ошибки выведет компонент перезагрузки страницы
         loadingStatusMovie !== "loaded"
         ? loadingStatusMovie === "failed"
             ? <Reloader onClick={handlerClickReboot} />
             : <Preloader />
         : cardFilm.map((movie : IMoviesList, id) => {
             return <div className="movie-card" key={id}>
+                {isShadow ? '' : <SuccessfullyAddedMovie />}
                 <img src={
                     movie.poster
                     ? `${changeSizeImg(movie.poster.url || movie.poster.previewUrl)}300x450`
@@ -85,7 +64,7 @@ const MovieCard : React.FC = () => {
                     <h2 className="title">{movie.name}</h2>
                     <div className="block-btn">
                         <ButtonNavigate params={currentPage !== 1 ? '/movies' : '/'} direction={'Назад'}/>
-                        <button className="btn-add" onClick={handlerClick}>В Избранное</button>
+                        <button className="btn-add" onClick={() => handlerClick(movie)}>В Избранное</button>
                     </div>
                     <h3 className="info">О фильме</h3>
                     <p> <b>Описание фильма:</b> {movie.description ? movie.description : 'Описание отсутвует'}</p>

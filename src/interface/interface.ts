@@ -23,6 +23,7 @@ export interface IState {
     optionsUrlMovie: string
     films: IMoviesList[],
     cardFilm: IMoviesList[],
+    favoriteMovies: IMoviesList[],
     pages: number,
     currentPage: number
 
@@ -64,7 +65,8 @@ export interface IMoviesList {
     rating?: IRating
     poster?: IPoster
     genres: IGenres[]
-    releaseYears: IReleaseYears[]
+    releaseYears: IReleaseYears[],
+    year: number
 
 }
 
@@ -82,6 +84,6 @@ export interface IFetchMovieListOfParams {
     page: number
 }
 
-// export default interface IfetchMoviesWithOptions {
-//
-// }
+export interface IGenreResponse {
+    []: IGenres
+}

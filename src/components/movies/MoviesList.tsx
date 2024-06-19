@@ -4,6 +4,7 @@ import {stubPosterList} from "../../assets/posters";
 import {changeSizeImg} from "../../assets/posters";
 import * as React from "react";
 
+// Компонент выводит список фильмов
 const MoviesList: React.FC = ({data} : IMoviesList[]) => {
     return (
         <div className="block-movies">
