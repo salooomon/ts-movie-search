@@ -1,15 +1,15 @@
 import {Link} from "react-router-dom";
-import { IMoviesList} from "../../interface/interface";
+import { IMoviesItem} from "../../interface/interface";
 import {stubPosterList} from "../../assets/posters";
 import {changeSizeImg} from "../../assets/posters";
 import * as React from "react";
 
 // Компонент выводит список фильмов
-const MoviesList: React.FC = ({data} : IMoviesList[]) => {
+const MoviesList: React.FC = ({data} : IMoviesItem[]) => {
     return (
         <div className="block-movies">
             <ul className="list-movies">
-                {data.map((movie : IMoviesList, id) => {
+                {data.map((movie : IMoviesItem, id) => {
                     return movie.name || movie.alternativeName
                             ? <li className="item-movie" key={id}>
                                 <Link to={`/movies/${movie.id}`}>

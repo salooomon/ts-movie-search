@@ -21,10 +21,10 @@ export interface IState {
     error: string | null
     genreFilms: IGenresMovies[]
     optionsUrlMovie: string
-    films: IMoviesList[],
-    cardFilm: IMoviesList[],
-    favoriteMovies: IMoviesList[],
-    pages: number,
+    films: IMoviesItem[]
+    cardFilm: IMoviesItem[]
+    favoriteMovies: IMoviesItem[]
+    pages: number
     currentPage: number
 
 }
@@ -56,11 +56,10 @@ export interface IRating {
 }
 
 // Интерфейс объекта фильма
-export interface IMoviesList {
+export interface IMoviesItem {
     id: number
     name: string
-    alternativeName: string,
-    year: number
+    alternativeName: string
     description: string | null
     rating?: IRating
     poster?: IPoster
@@ -72,7 +71,7 @@ export interface IMoviesList {
 
 // Интерфейс запроса с сервера
 export interface IMoviesResponse {
-    docs: IMoviesList[]
+    docs: IMoviesItem[]
     total: number
     limit: number
     page: number

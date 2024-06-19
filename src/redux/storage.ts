@@ -21,6 +21,7 @@ const selectFields = '&selectFields=alternativeName&selectFields=id&selectFields
 
  const instance = axios.create({
     baseURL: 'https://api.kinopoisk.dev',
+
     headers: {
         'X-API-KEY' : 'TTRP2E1-VXHMAS1-PWMJCK7-V86Y6EF'
     } as RawAxiosRequestHeaders
@@ -96,7 +97,13 @@ const storageReducer = createSlice({
         },
         // Сохроняет фильм в избранное
         addFavoritesMovie(state : IState, action : PayloadAction<IMoviesList>) {
-            state.favoriteMovies.push(action.payload)
+            if (state.favoriteMovies.some(elem => elem.id === action.payload.id)) {
+                alert("Такой фильм уже есть в избранном")
+            } else {
+                state.favoriteMovies.push(action.payload)
+                alert("Фильм успешно добавлен в избранное!")
+            }
+
         },
         // Удаляет фильм из избранного
         removeFavoriteMovie(state: IState, action : PayloadAction<number>) {
@@ -127,7 +134,6 @@ const storageReducer = createSlice({
             state.error = null
         })
         .addCase(fetchMovies.fulfilled, (state : IState, action : PayloadAction<IMoviesResponse>) => {
-            console.log(action.payload)
             state.loadingStatusMovie = "loaded"
             state.films = action.payload.docs
             state.pages = action.payload.pages

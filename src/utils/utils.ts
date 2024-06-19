@@ -26,7 +26,7 @@ export function createPages(pages, pagesCount, currentPage) {
 // Функция генерирует года для фильтра поиска
 export function generateArrayOfYears() {
     const nowYear = new Date().getFullYear();
-    const oldYear = nowYear - 34
+    const oldYear = nowYear - 34;
 
     const years = [];
 
@@ -38,7 +38,7 @@ export function generateArrayOfYears() {
 
 // Функция генерирует рейтинг для фильтра поиска
 export function generateArrayOfRating() {
-    const ratings = []
+    const ratings = [];
     for(let i = 1; i <= 10; i++) {
         ratings.push(i.toString());
     }

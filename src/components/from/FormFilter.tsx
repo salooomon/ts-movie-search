@@ -35,17 +35,24 @@ const FormFilter : React.FC = () => {
         const valueToString = target.value.toString();
 
         const newOptions = optionsFilter
-        if (target.name === "rating_from") {
-            newOptions.ratingFrom = valueToString
-        } else if (target.name === "rating_to") {
-            newOptions.ratingTo = valueToString
-        } else if (target.name === "year_from") {
-            newOptions.yearFrom = valueToString
-        } else if (target.name === "year_to") {
-            newOptions.yearTo = valueToString
-        } else if (target.name === "genre") {
-            newOptions.genre = target.value === 'все' ? '' : target.value
+        switch (target.name) {
+            case "rating_from":
+                newOptions.ratingFrom = valueToString
+                break
+            case "rating_to":
+                newOptions.ratingTo = valueToString
+                break
+            case "year_from":
+                newOptions.yearFrom = valueToString
+                break
+            case "year_to":
+                newOptions.yearTo = valueToString
+                break
+            case "genre":
+                newOptions.genre = target.value === 'все' ? '' : target.value
+                break
         }
+
         setOptions(newOptions);
     }
 
@@ -72,7 +79,7 @@ const FormFilter : React.FC = () => {
             : <Preloader />
        : <div>
             <form onSubmit={handleSubmit}>
-                <label onChange={handleChange}>
+                <label onChange={() => handleChange}>
                     <span className='text-label'>Жанр:</span>
                     <select name="genre" required>
                         {genreFilms.map((genre, id) => {
@@ -80,7 +87,7 @@ const FormFilter : React.FC = () => {
                         })}
                     </select>
                 </label>
-                <label onChange={handleChange}>
+                <label onChange={() => handleChange}>
                     <span className='text-label'>Рейтинг от:</span>
                     <select name="rating_from" required>
                         {ratings.map((rating, id) => {
@@ -94,7 +101,7 @@ const FormFilter : React.FC = () => {
                         })}
                     </select>
                 </label>
-                <label onChange={handleChange}>
+                <label onChange={() => handleChange}>
                     <span className='text-label'>Год выхода от:</span>
                     <select name="year_from" required>
                         {years.map((year, id) => {
